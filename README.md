@@ -1,5 +1,7 @@
 # crusader-words
-A web app to play crosswords
+A web app to play crosswords. Probably best played on a mobile device.
+
+[Play!](https://ker0chan.github.io/crusader-words/) (Bring your own .puz file)
 
 ## TODO
 * Let the player write something (!!!)
