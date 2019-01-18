@@ -1,0 +1,14 @@
+{
+  "background_color": "white",
+  "description": "A crosswords app.",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    }
+  ],
+  "name": "Crusader Words",
+  "start_url": "index.html"
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Crusader Words</title>
+    <link rel="manifest" href="manifest.webmanifest">
+
+    <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons&style=outline" rel="stylesheet">
+
+    <!-- css -->
+    <link rel="stylesheet" href="css/MaterialIcons.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/index.css">
+
+    <!-- js -->
+    <script src="js/d3/d3.min.js"></script>
+    <script src="js/parse.js"></script>
+    <script src="js/classes/Word.js"></script>
+    <script src="js/classes/CellData.js"></script>
+    <script src="js/classes/Puzzle.js"></script>
+  </head>
+
+  <body>
+    <div id='container'>
+      <div id='toolbar'>
+        <label for="upload">
+          <i class="material-icons md-48">folder</i>
+        </label>
+        <input type="file" id="upload">
+      </div>
+      <div id='grid-flex-container'>
+        <div id='grid'></div>
+      </div>
+      <div id='clue-container'>
+        <div id='clue'></div>
+      </div>
+      <div id='keyboard'><!-- TODO --></div>
+    </div>
+
+    <script src="js/index.js"></script>
+  </body>
+
+</html>
