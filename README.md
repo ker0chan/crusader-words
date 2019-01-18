@@ -15,7 +15,7 @@ A web app to play crosswords. Probably best played on a mobile device.
 * Reveal cell/word/grid
 * Display puzzle information (author, description, copyright)
 * Highlighting linked answers ("See 12-Across, ...")
-* Progress milestones ("Halfway done! *\(n_n)/*")
+* Progress milestones (`Halfway done! *\(n_n)/*`)
 * Whatever rebuses are (rebus? rebi?)
 * Customisation (color scheme, margins/borders, fonts...)
 * Multiplayer mode???
