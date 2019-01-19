@@ -39,7 +39,7 @@ body
 #clue-container
 {
   height:50px;
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--clue-bg-color);
   display:flex;
   flex-direction: row;
   justify-content: space-between;
@@ -120,7 +120,11 @@ label[for='upload'] {
   vertical-align: middle;
   display:inline-block;
   text-align: center;
-  color: var(--toolbar-text-color);
+  color: var(--clue-text-color);
+}
+#prev-word, #next-word
+{
+  color: var(--clue-icon-color);
 }
 
 /* keyboard */

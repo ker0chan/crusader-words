@@ -182,8 +182,8 @@ class Puzzle
       //Have we gone past the current word's first cell?
       if(this.selectedIndex < this.coordsToIndex(this.selectedWord.x, this.selectedWord.y))
       {
-        //Yes! Select the next word!
-        return this.selectPrevWord(direction);
+        //Yes! Select the last cell of the previous word!
+        return this.selectPrevWord(direction, true);
       } else
       {
         //No! Call select() with this new index to update the cells selected/wordSelected state
@@ -199,7 +199,8 @@ class Puzzle
   }
 
   //Select the previous word (in the given direction, if available)
-  selectPrevWord(direction)
+  //Optionally, select the last cell of the word (e.g. if we're backspacing)
+  selectPrevWord(direction, selectLastCell = false)
   {
     let directionChanged = false; //We'll return true if we had to change directions
 
@@ -218,8 +219,15 @@ class Puzzle
       prevWord = this.words.slice().reverse().find(w=>w.direction == direction);
     }
 
-    //Select the last cell of this word (index + length - 1, directionally aware)
-    this.select(this.coordsToIndex(prevWord.x, prevWord.y) + (direction?1:this.width)*(prevWord.answer.length-1), direction);
+    if(selectLastCell)
+    {
+      //Select the last cell of this word (index + length - 1, directionally aware)
+      this.select(this.coordsToIndex(prevWord.x, prevWord.y) + (direction?1:this.width)*(prevWord.answer.length-1), direction);
+    } else
+    {
+      //Select the first cell of this word
+      this.select(this.coordsToIndex(prevWord.x, prevWord.y), direction);
+    }
 
     //Notify whoever called us that this action led to a change of direction
     return directionChanged;

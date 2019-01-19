@@ -12,6 +12,19 @@ var keyboard = new VirtualKeyboard(document.querySelector("#keyboard"));
 keyboard.on("input", inputHandler);
 keyboard.on("rewind", rewindHandler);
 keyboard.on ("backspace", backspaceHandler);
+//Bind the prev/next-word buttons to their event handlers
+document.querySelector("#prev-word").addEventListener("click", e => {
+  prevWordHandler();
+  //Stop the event from bubbling up the DOM tree and triggering a direction change (#prev-word is in #clue-container!)
+  e.stopPropagation();
+});
+document.querySelector("#next-word").addEventListener("click", e => {
+  nextWordHandler();
+  //Stop the event from bubbling up the DOM tree and triggering a direction change (#next-word is in #clue-container!)
+  e.stopPropagation();
+});
+//Use the clue as a button to switch between Across and Down
+document.querySelector("#clue-container").addEventListener("click", changeDirectionHandler);
 
 //Basic local storage restore
 if(localStorage.getItem("currentPuzzle") != null)
@@ -35,6 +48,10 @@ var colorScheme = {
   "--cell-black":"#826B88",
   "--cell-selected":"#DE786A",
   "--cell-word-selected":"#F8B976",
+
+  "--clue-bg-color":"#376888",
+  "--clue-text-color":"#8CD0E5",
+  "--clue-icon-color":"#ffffff",
 
   "--keyboard-bg-color":"#8CD0E5",
   "--keyboard-keys-bg-color":"#ffffff",
@@ -122,6 +139,37 @@ function backspaceHandler()
   render();
 };
 
+function prevWordHandler()
+{
+  //Select the previous word
+  if(currentPuzzle.selectPrevWord(currentDirection))
+  {
+    //If Puzzle::selectPrevWord returns true, it changed the direction (we were on the first word in the grid)
+    currentDirection = !currentDirection;
+  }
+  //Display the changes
+  render();
+}
+function nextWordHandler()
+{
+  //Select the next word
+  if(currentPuzzle.selectNextWord(currentDirection))
+  {
+    //If Puzzle::selectNextWord returns true, it changed the direction (we were on the last word in the grid)
+    currentDirection = !currentDirection;
+  }
+  //Display the changes
+  render();
+}
+function changeDirectionHandler()
+{
+  //Change the direction
+  currentDirection = !currentDirection;
+  //Re-trigger select on the current selectedIndex
+  currentPuzzle.select(currentPuzzle.selectedIndex, currentDirection);
+  //Display the changes
+  render();
+}
 //Resizes the grid element
 function resizeGrid()
 {

@@ -4,7 +4,6 @@ A web app to play crosswords. Probably best played on a mobile device.
 [Play!](https://ker0chan.github.io/crusader-words/) (Bring your own .puz file)
 
 ## TODO
-* Previous/Next clue buttons
 * Keyboard: Letter tooltip on keypress
 * Keyboard: Haptic feedback on keypress
 * Pencil mode
