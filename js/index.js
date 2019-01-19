@@ -6,6 +6,13 @@ var currentDirection = true; //true: Across; false: Down
 
 resizeGrid(); //Initialize the grid size
 
+//Create a virtual keyboard in #keyboard
+var keyboard = new VirtualKeyboard(document.querySelector("#keyboard"));
+//Bind the keyboard events to the appropriate event handlers
+keyboard.on("input", inputHandler);
+keyboard.on("rewind", rewindHandler);
+keyboard.on ("backspace", backspaceHandler);
+
 //Basic local storage restore
 if(localStorage.getItem("currentPuzzle") != null)
 {
@@ -16,6 +23,7 @@ if(localStorage.getItem("currentPuzzle") != null)
 
 //Make it pretty ✨
 //(with CSS variables)
+//TODO: handle multiple color schemes
 var colorScheme = {
   "--page-bg-color":"#ffffff",
   "--toolbar-bg-color":"#376888",
@@ -26,12 +34,16 @@ var colorScheme = {
   "--letter-default-color":"#585872",
   "--cell-black":"#826B88",
   "--cell-selected":"#DE786A",
-  "--cell-word-selected":"#F8B976"
+  "--cell-word-selected":"#F8B976",
+
+  "--keyboard-bg-color":"#8CD0E5",
+  "--keyboard-keys-bg-color":"#ffffff",
+  "--keyboard-keys-shadow-color":"#376888",
+  "--keyboard-keys-text-color":"#376888"
 }
 for(let c in colorScheme){document.querySelector('body').style.setProperty(c, colorScheme[c])};
 
-
-
+//Update the data binding between the current puzzle cells and the .cell elements using d3
 function updateBindings()
 {
   //Remove every existing cell element
@@ -46,7 +58,10 @@ function updateBindings()
   .classed("cell", true)
   .classed("black", d => d.black)
   .on('click', cellClickHandler)
-  .text(d => d.content)
+
+  //Add a content element in each cell
+  cellBindings.append("span")
+  .classed("content", true)
 
   //Add a number element in each cell
   cellBindings.append("div")
@@ -71,6 +86,41 @@ function cellClickHandler(cell, index)
   //Display the changes
   render();
 }
+
+//On keyboard input
+function inputHandler(letter)
+{
+  //Input the current letter in the puzzle, in the currentDirection.
+  if(currentPuzzle.input(letter, currentDirection))
+  {
+    //If Puzzle::input returns true, it changed the direction (probably reached the end of the last word of the grid in the currentDirection)
+    currentDirection = !currentDirection;
+  }
+  //Display the changes
+  render();
+}
+
+//On keyboard rewind
+function rewindHandler()
+{
+  //Rewind the selection (select the first letter of the currently selected word)
+  currentPuzzle.rewind(currentDirection);
+  //Display the changes
+  render();
+}
+
+//On keyboard backspace
+function backspaceHandler()
+{
+  //Backspace in the puzzle, in the currentDirection.
+  if(currentPuzzle.backspace(currentDirection))
+  {
+    //If Puzzle::backspace return true, it changed the direction (backspaced at the beginning of the first word of the grid, which was empty)
+    currentDirection = !currentDirection;
+  }
+  //Display the changes
+  render();
+};
 
 //Resizes the grid element
 function resizeGrid()
@@ -108,6 +158,12 @@ function render()
   .style("height", cellPixelHeight+"px")
   .style("line-height", cellPixelHeight+"px")
   .style("font-size", (cellPixelHeight*fontSizeRatio)+"px")
+
+  //Display the content of this cell
+  cellBindings.selectAll(".content")
+  .text(d => d.userContent)
+
+  //Style the number element in this cell (might be empty, but styled nonetheless ¯\_(ツ)_/¯)
   cellBindings.selectAll(".number")
   .style("width", (cellPixelWidth*numberLabelRatio)+"px")
   .style("left", (cellPixelWidth*numberMarginRatio)+"px")
@@ -120,6 +176,7 @@ function render()
   .classed("selected", d => d.selected)
   .classed("word-selected", d => d.wordSelected)
 
+  //Display the current clue
   document.querySelector("#clue").innerHTML = currentPuzzle.selectedWord.clue;
 }
 

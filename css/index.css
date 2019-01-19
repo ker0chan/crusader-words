@@ -8,6 +8,7 @@ body
   height: 100%;
   /* Disables pull-to-refresh and overscroll glow effect. */
   overscroll-behavior-y: none;
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* general layout */
@@ -26,6 +27,7 @@ body
   line-height: 50px;
   box-shadow: inset 0px -2px 0px rgba(0,0,0,0.4);
   color: var(--toolbar-text-color);
+  user-select: none;
 }
 #grid-flex-container
 {
@@ -42,11 +44,17 @@ body
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
 }
 #keyboard
 {
   height:200px;
-  background-color: var(--toolbar-text-color);
+  background-color: var(--keyboard-bg-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items:center;
+  user-select: none;
 }
 
 /* toolbar */
@@ -62,7 +70,6 @@ label[for='upload'] {
 /* grid */
 #grid
 {
-  font-family: 'Montserrat', sans-serif;
   background: var(--grid-bg-color);
   margin: 0 auto;
   user-select: none;
@@ -79,6 +86,7 @@ label[for='upload'] {
   color: var(--letter-default-color);
   cursor: pointer;
   position: relative;
+  vertical-align: middle;
 
   /* disable the tap highlight on mobile devices */
   -webkit-tap-highlight-color: rgba(0,0,0,0);
@@ -111,8 +119,33 @@ label[for='upload'] {
   flex:1;
   vertical-align: middle;
   display:inline-block;
-
-  font-family: Montserrat, sans-serif;
   text-align: center;
   color: var(--toolbar-text-color);
+}
+
+/* keyboard */
+#keyboard .key-row
+{
+  height: 50px;
+  text-align: center;
+}
+#keyboard .key
+{
+  display: inline-block;
+  height: 50px;
+  width: 37px;
+  font-size: 26px;
+  line-height: 50px;
+  color: var(--keyboard-keys-text-color);
+  background: var(--keyboard-keys-bg-color);
+  border-radius: 3px;
+  box-shadow: 0px 3px 0px var(--keyboard-keys-shadow-color);
+  vertical-align: middle;
+  margin: 0 2px;
+}
+#keyboard .key.special
+{
+  width: 55px;
+  height: 43px;
+  padding-top: 7px;
 }

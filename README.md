@@ -4,11 +4,7 @@ A web app to play crosswords. Probably best played on a mobile device.
 [Play!](https://ker0chan.github.io/crusader-words/) (Bring your own .puz file)
 
 ## TODO
-* Let the player write something (!!!)
-* Virtual keyboard
-* Backspace
 * Previous/Next clue buttons
-* Automatic move to previous/next word when erasing/writing
 * Pencil mode
 * Timer
 * Check cell/word/grid
