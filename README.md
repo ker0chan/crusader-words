@@ -5,6 +5,8 @@ A web app to play crosswords. Probably best played on a mobile device.
 
 ## TODO
 * Previous/Next clue buttons
+* Keyboard: Letter tooltip on keypress
+* Keyboard: Haptic feedback on keypress
 * Pencil mode
 * Timer
 * Check cell/word/grid
