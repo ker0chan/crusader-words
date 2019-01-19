@@ -16,13 +16,16 @@ You can easily host your own copy of Crusader Words - just put the folder on a l
 * Keyboard: Letter tooltip on keypress
 * Keyboard: Haptic feedback on keypress
 * Keyboard: Different layouts (AZERTY, BEPO, DVORAK...)
+* Save current progress
+* Save current progress across multiple grids (!)
 * Pencil mode
 * Timer
 * Check cell/word/grid
 * Reveal cell/word/grid
 * Display puzzle information (author, description, copyright)
-* Highlighting linked answers ("See 12-Across, ...")
+* Highlight linked answers ("See 12-Across, ...")
 * Progress milestones (`Halfway done! *\(n_n)/*`)
 * Whatever rebuses are (rebus? rebi?)
 * Customisation (color scheme, margins/borders, fonts...)
+* Provide sample grids (e.g. a simple mini on first launch)
 * Multiplayer mode???
