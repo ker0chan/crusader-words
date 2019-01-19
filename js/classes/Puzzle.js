@@ -13,7 +13,7 @@ class Puzzle
     this.selectedWord; //The currently selected word
 
     this.initCells(); //Initialize the cells data using the rawContent and Words array
-    this.select(0, true); //Select the first (top-left) cell
+    this.select(this.coordsToIndex(this.words[0].x, this.words[0].y), true); //Select the first cell of the first word, in direction Across
   }
 
   //Initialize the array of CellData from the rawContent and array of words
