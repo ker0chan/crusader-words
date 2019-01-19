@@ -128,32 +128,41 @@ class Puzzle
   //Input the given letter at the current index, in the given direction
   input(letter, direction)
   {
-    //Set the letter as the current cell's user content
+    //Are we overwriting something, or just filling in an empty cell?
+    let overwriting = (this.cells[this.selectedIndex].userContent != '');
+
+    //Write that letter down
     this.cells[this.selectedIndex].userContent = letter;
-    if(direction) //Across
+
+    //Are we on the last cell of this word? (start + length - 1, directionally aware)
+    if(this.selectedIndex >= this.coordsToIndex(this.selectedWord.x, this.selectedWord.y) + ((this.selectedWord.answer.length-1)*(direction?1:this.width)))
     {
-      this.selectedIndex++; //Increment the index
-      //Have we gone past the current words' last cell?
-      if(this.selectedIndex >= this.coordsToIndex(this.selectedWord.x, this.selectedWord.y) + this.selectedWord.answer.length)
-      {
-        //Yes! Select the next one!
-        //Return whatever selectNextWord returns, because this might change the current direction
-        return this.selectNextWord(direction);
-      } else
-      {
-        //No! Call select() with this new index to update the cells selected/wordSelected state
-        this.select(this.selectedIndex, direction);
-      }
+      //Move to the next available word
+      //Return whatever selectNextIncompleteWord returns, because this might change the current direction
+      return this.selectNextIncompleteWord(direction);
+    }
+
+    //Are we overwriting something, or just filling in an empty cell?
+    if(overwriting)
+    {
+      //Move one cell further, even if it is already filled in, we may want to change it too
+      this.selectedIndex += (direction?1:this.width);
+      //Call select() with this new index to update the cells selected/wordSelected state
+      this.select(this.selectedIndex, direction);
     } else
     {
-      this.selectedIndex += this.width; //Increment the index (vertically, by adding the puzzle's width)
-      if(this.selectedIndex >= this.coordsToIndex(this.selectedWord.x, this.selectedWord.y) + this.selectedWord.answer.length*this.width)
+      //Find the next empty cell, after the currently selected one (because it's definitely not this one - we just filled it in)
+      let nextCell = this.findIndexOfNextEmptyCell(this.selectedWord, this.selectedIndex);
+
+      if(this.selectedIndex == nextCell)
       {
-        return this.selectNextWord(direction);
-      } else
-      {
-        this.select(this.selectedIndex, direction);
+        //There isn't one! Find the next word instead.
+        // Return whatever selectNextIncompleteWord returns, because this might change the current direction
+        return this.selectNextIncompleteWord(direction);
       }
+
+      //Call select() with this new index to update the cells selected/wordSelected state
+      this.select(nextCell, direction)
     }
 
     //We didn't change the current direction, it's common courtesy to mention it.
@@ -260,21 +269,50 @@ class Puzzle
     return directionChanged;
   }
 
-  //Find the index of the first empty cell in this word (or its starting index if it's entirely filled in)
-  findIndexOfFirstEmptyCell(word)
+  selectNextIncompleteWord(direction)
+  {
+    let countdown = this.words.length;
+    do
+    {
+        let directionChanged = this.selectNextWord(direction)
+        //We should have reached the first empty cell of the next word. Is it truly empty?
+        if(this.cells[this.selectedIndex].userContent == '')
+        {
+          //It is! We can stay here!
+          //Exit, but be sure to mention any direction change.
+          return directionChanged;
+        }
+
+        //The cell isn't empty, which means this word is already filled in; let's keep looking for an incomplete word...
+        countdown--;
+    } while(countdown > 0)
+
+    //We've gone through the whole list, and couldn't find a word.
+    //...Well, we tried, it's what counts!
+    return false;
+  }
+
+  //Find the index of the first empty cell in this word, after fromIndex (inclusive).
+  //If no cell is empty, return fromIndex itself.
+  findIndexOfNextEmptyCell(word, fromIndex)
   {
     let d = word.direction; //Shorthand
-    let start = this.coordsToIndex(word.x, word.y);
-    let end = start + ((d?1:this.width) * (word.answer.length - 1)); //index + length - 1, directionally aware
+    let end = this.coordsToIndex(word.x, word.y) + ((d?1:this.width) * (word.answer.length - 1)); //start + length - 1, directionally aware
     //For each cell in the word,
-    for(let i = start; i < end; i += (d?1:this.width))
+    for(let i = fromIndex; i <= end; i += (d?1:this.width))
     {
       //If it's empty, return the index
       if(this.cells[i].userContent == '') return i;
     }
 
-    //No empty cell was found, return the starting index
-    return start;
+    //No empty cell was found, return the original index
+    return fromIndex;
+  }
+
+  //Find the index of the first empty cell in this word, or its starting index if it's entirely filled in
+  findIndexOfFirstEmptyCell(word)
+  {
+    return this.findIndexOfNextEmptyCell(word, this.coordsToIndex(word.x, word.y));
   }
 
   stringify()
