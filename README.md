@@ -21,6 +21,8 @@ You can easily host your own copy of Crusader Words - just put the folder on a l
 * Pencil mode
 * Timer
 * Check cell/word/grid
+* Autocheck mode (check each cell as it's filled in)
+* Check answers when grid is filled, react accordingly
 * Reveal cell/word/grid
 * Display puzzle information (author, description, copyright)
 * Highlight linked answers ("See 12-Across, ...")
