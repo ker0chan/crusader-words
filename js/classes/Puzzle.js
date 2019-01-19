@@ -225,8 +225,8 @@ class Puzzle
       this.select(this.coordsToIndex(prevWord.x, prevWord.y) + (direction?1:this.width)*(prevWord.answer.length-1), direction);
     } else
     {
-      //Select the first cell of this word
-      this.select(this.coordsToIndex(prevWord.x, prevWord.y), direction);
+      //Select the first empty cell of this word
+      this.select(this.findIndexOfFirstEmptyCell(prevWord), direction);
     }
 
     //Notify whoever called us that this action led to a change of direction
@@ -253,11 +253,28 @@ class Puzzle
       nextWord = this.words.find(w=>w.direction == direction);
     }
 
-    //Select the first cell of this word
-    this.select(this.coordsToIndex(nextWord.x, nextWord.y), direction);
+    //Select the first empty cell of this word
+    this.select(this.findIndexOfFirstEmptyCell(nextWord), direction);
 
     //And notify any direction change
     return directionChanged;
+  }
+
+  //Find the index of the first empty cell in this word (or its starting index if it's entirely filled in)
+  findIndexOfFirstEmptyCell(word)
+  {
+    let d = word.direction; //Shorthand
+    let start = this.coordsToIndex(word.x, word.y);
+    let end = start + ((d?1:this.width) * (word.answer.length - 1)); //index + length - 1, directionally aware
+    //For each cell in the word,
+    for(let i = start; i < end; i += (d?1:this.width))
+    {
+      //If it's empty, return the index
+      if(this.cells[i].userContent == '') return i;
+    }
+
+    //No empty cell was found, return the starting index
+    return start;
   }
 
   stringify()
