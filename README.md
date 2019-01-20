@@ -28,4 +28,5 @@ You can easily host your own copy of Crusader Words - just put the folder on a l
 * Whatever rebuses are (rebus? rebi?)
 * Customisation (color scheme, margins/borders, fonts...)
 * Provide sample grids (e.g. a simple mini on first launch)
+* Update CSS/JS on demand without busting the whole cache (e.g. clearing localStorage in the process)
 * Multiplayer mode???
