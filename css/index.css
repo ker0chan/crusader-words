@@ -25,9 +25,10 @@ body
   overflow: hidden;
   background: var(--toolbar-bg-color);
   line-height: 50px;
-  box-shadow: inset 0px -2px 0px rgba(0,0,0,0.4);
   color: var(--toolbar-text-color);
   user-select: none;
+  display: flex;
+  flex-direction: row;
 }
 #grid-flex-container
 {
@@ -57,14 +58,81 @@ body
   user-select: none;
 }
 
-/* toolbar */
 input[type='file'] {
   display: none;
 }
 
-label[for='upload'] {
-  margin: 0 10px;
-  display:inline-block;
+/* dropdowns */
+#dropdown-container
+{
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: calc(100% - 50px);
+  margin-top: 50px;
+  background-color: rgba(0,0,0,0.5);
+  visibility: hidden;
+}
+#dropdown-container.visible
+{
+  visibility: visible;
+}
+.dropdown
+{
+  position: absolute;
+  width: auto;
+  top: 0px;
+  left: 0px;
+  background: var(--toolbar-text-color);
+  color: var(--toolbar-bg-color);
+  padding: 0px 5px;
+  visibility:hidden;
+}
+.dropdown.open
+{
+  visibility:visible;
+}
+.dropdown .material-icons
+{
+  line-height: 50px
+}
+.dropdown-element
+{
+  height: 50px;
+}
+.dropdown-label
+{
+  display: inline-block;
+  line-height: 50px;
+  vertical-align: top;
+}
+
+#check-menu-container
+{
+  left: auto;
+  right: 0px;
+}
+
+/* toolbar */
+.spacer
+{
+  flex: 1;
+}
+#toolbar > div
+{
+  display: inline-block;
+  height: 100%;
+  width: 50px;
+}
+#main-menu-button, #check-menu-button
+{
+  background: var(--toolbar-bg-color);
+}
+#main-menu-button.open, #check-menu-button.open
+{
+  background: var(--toolbar-text-color);
+  color: var(--toolbar-bg-color);
 }
 
 /* grid */

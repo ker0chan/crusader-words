@@ -27,15 +27,21 @@
 
   <body>
     <div id='container'>
+
       <div id='toolbar'>
-        <label for="upload">
-          <i class="material-icons md-48">folder</i>
-        </label>
-        <input type="file" id="upload">
+        <div id='main-menu-button' class='dropdown-button' data-dropdown-id='main-menu-container'>
+          <i class="material-icons md-48">menu</i>
+        </div>
+        <div class='spacer'></div>
+        <div id='check-menu-button' class='dropdown-button' data-dropdown-id='check-menu-container'>
+          <i class="material-icons md-48">more_vert</i>
+        </div>
       </div>
+
       <div id='grid-flex-container'>
         <div id='grid'></div>
       </div>
+
       <div id='clue-container'>
         <div id='prev-word'>
           <i class="material-icons md-48">keyboard_arrow_left</i>
@@ -45,8 +51,32 @@
           <i class="material-icons md-48">keyboard_arrow_right</i>
         </div>
       </div>
-      <div id='keyboard'><!-- TODO --></div>
+
+      <div id='keyboard'></div>
+
+      <div id='dropdown-container'>
+        <div id='main-menu-container' class='dropdown'>
+          <label class='dropdown-element' for='upload'>
+            <i class="material-icons md-36">folder</i>
+            <div class='dropdown-label'>Open puzzle</div>
+          </label>
+        </div>
+
+        <div id='check-menu-container' class='dropdown'>
+          <div class='dropdown-element' id='check-cell-button'>
+            <i class="material-icons md-36">done</i>
+            <div class='dropdown-label'>Check cell</div>
+          </div>
+
+          <div class='dropdown-element' id='check-puzzle-button'>
+            <i class="material-icons md-36">done</i>
+            <div class='dropdown-label'>Check puzzle</div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <input type="file" id="upload">
 
     <script src="js/index.js"></script>
   </body>

@@ -26,6 +26,54 @@ document.querySelector("#next-word").addEventListener("click", e => {
 //Use the clue as a button to switch between Across and Down
 document.querySelector("#clue-container").addEventListener("click", changeDirectionHandler);
 
+//Toolbar buttons
+document.querySelector("#check-cell-button").addEventListener("click", checkCellHandler);
+document.querySelector("#check-puzzle-button").addEventListener("click", checkPuzzleHandler);
+
+//Match every .dropdown-button with its .dropdown
+document.querySelectorAll(".dropdown-button").forEach(function(button){
+  //On click,
+  button.addEventListener("click", function(e){
+    //if the corresponding dropdown isn't already open,
+    if(!document.querySelector("#"+button.getAttribute("data-dropdown-id")).classList.contains("open"))
+    {
+      //open it
+      openDropdown(button.getAttribute("data-dropdown-id"));
+      //and stop the event from bubbling (otherwise it'll be caught as a random click and immediately close the dropdown!)
+      e.stopPropagation();
+    }
+  })
+})
+//In response to any click event, if there's a dropdown open, close it.
+document.addEventListener("click", function(e){
+  if(document.querySelector(".dropdown.open") != null)
+  {
+    closeDropdowns();
+  }
+})
+//Open the dropdown that matches ('#'+dropdownId)
+function openDropdown(dropdownId)
+{
+  //Close any other dropdown
+  closeDropdowns();
+  //Show the dropdown container
+  document.querySelector("#dropdown-container").classList.add("visible");
+  //Show the .dropdown with this id
+  document.querySelector("#"+dropdownId).classList.add("open");
+  //Put the corrsponding .dropdown-button in its open state
+  document.querySelector(".dropdown-button[data-dropdown-id='"+dropdownId+"']").classList.add("open");
+}
+//Close all dropdowns (open or not!)
+function closeDropdowns()
+{
+  //Hide the dropdown container
+  document.querySelector("#dropdown-container").classList.remove("visible");
+  //Hide every .dropdown
+  document.querySelectorAll(".dropdown").forEach(dd => dd.classList.remove("open"));
+  //Reset every .dropdown-button to their closed state
+  document.querySelectorAll(".dropdown-button").forEach(ddb => ddb.classList.remove("open"));
+}
+
 //Basic local storage restore
 if(localStorage.getItem("currentPuzzle") != null)
 {
@@ -226,6 +274,18 @@ function render()
 
   //Display the current clue
   document.querySelector("#clue").innerHTML = currentPuzzle.selectedWord.clue;
+}
+
+function checkCellHandler()
+{
+  var currentCell = currentPuzzle.cells[currentPuzzle.selectedIndex];
+  alert( (currentCell.content == currentCell.userContent)?"This cell is correct.":"This cell is incorrect." );
+}
+
+function checkPuzzleHandler()
+{
+  var err = currentPuzzle.cells.find(c => !c.black && c.content != c.userContent)
+  alert( (err == undefined)?"This puzzle is complete - Well done!":"You're not done yet :(" );
 }
 
 //Basic local storage save
