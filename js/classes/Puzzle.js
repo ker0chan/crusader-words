@@ -1,6 +1,6 @@
 class Puzzle
 {
-  constructor(width, height, blacks, words, rawContent)
+  constructor(width, height, blacks, words, rawContent, cells = null)
   {
     this.width = width; //Width of the grid. Extracted from the .puz file.
     this.height = height; //Height of the grid. Extracted from the .puz file.
@@ -8,11 +8,21 @@ class Puzzle
     this.words = words; //An array of Words.
     this.rawContent = rawContent; //A string containing the entire grid, with one letter (or ".") per cell. Should have a length of width*height. Extracted from the .puz file.
 
-    this.cells = []; //An array of CellData. Will be data-bound to d3 elements.
+    this.cells = (cells==null)?[]:cells; //An array of CellData. Will be data-bound to d3 elements.
     this.selectedIndex; //The currently selected index
     this.selectedWord; //The currently selected word
 
-    this.initCells(); //Initialize the cells data using the rawContent and Words array
+    //Is this a fresh puzzle?
+    if(cells == null)
+    {
+      //Initialize the cells data using the rawContent and Words array
+      this.initCells();
+    } else
+    {
+      //Restore the cells to the given state
+      this.cells = cells;
+    }
+
     this.select(this.coordsToIndex(this.words[0].x, this.words[0].y), true); //Select the first cell of the first word, in direction Across
   }
 
@@ -314,15 +324,18 @@ class Puzzle
   {
     return this.findIndexOfNextEmptyCell(word, this.coordsToIndex(word.x, word.y));
   }
+}
 
-  stringify()
-  {
-    return JSON.stringify({
-      "width":this.width,
-      "height":this.height,
-      "blacks":this.blacks,
-      "words":this.words,
-      "rawContent":this.rawContent
-    });
-  }
+Puzzle.prototype.toString = function()
+{
+  //Upon serializing, only keep the required information.
+  //(e.g. the current selection is discarded)
+  return JSON.stringify({
+    "width":this.width,
+    "height":this.height,
+    "blacks":this.blacks,
+    "words":this.words,
+    "rawContent":this.rawContent,
+    "cells":this.cells
+  });
 }

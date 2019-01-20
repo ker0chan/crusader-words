@@ -74,11 +74,14 @@ function closeDropdowns()
   document.querySelectorAll(".dropdown-button").forEach(ddb => ddb.classList.remove("open"));
 }
 
-//Basic local storage restore
+//Restore the current puzzle from local storage (if any)
 if(localStorage.getItem("currentPuzzle") != null)
 {
+  //Deserialize the puzzle data
   var s = JSON.parse(localStorage.getItem("currentPuzzle"));
-  currentPuzzle = new Puzzle(s.width, s.height, s.blacks, s.words, s.rawContent);
+  //Rebuild the puzzle
+  currentPuzzle = new Puzzle(s.width, s.height, s.blacks, s.words, s.rawContent, s.cells);
+  //Update the d3 bindings
   updateBindings();
 }
 
@@ -163,6 +166,8 @@ function inputHandler(letter)
   }
   //Display the changes
   render();
+  //Autosave
+  save();
 }
 
 //On keyboard rewind
@@ -185,6 +190,8 @@ function backspaceHandler()
   }
   //Display the changes
   render();
+  //Autosave
+  save();
 };
 
 function prevWordHandler()
@@ -291,7 +298,8 @@ function checkPuzzleHandler()
 //Basic local storage save
 function save()
 {
-  localStorage.setItem("currentPuzzle", currentPuzzle.stringify());
+  //Serialize currentPuzzle into local storage (calls Puzzle.prototype.toString)
+  localStorage.setItem("currentPuzzle", currentPuzzle);
 }
 
 //Event listener for the file upload
