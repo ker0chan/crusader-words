@@ -13,10 +13,8 @@ You will need a .puz file (Across Lite format) to start playing, (TODO: Add a li
 You can easily host your own copy of Crusader Words - just put the folder on a local server or hosted website, and point to index.html. Take this opportunity to edit the color scheme in index.js, change the keyboard layout in VirtualKeyboard.js, or add other cool tweaks!
 
 ## TODO
-* Keyboard: Letter tooltip on keypress
 * Keyboard: Haptic feedback on keypress
 * Keyboard: Different layouts (AZERTY, BEPO, DVORAK...)
-* Save current progress
 * Save current progress across multiple grids (!)
 * Pencil mode
 * Timer
