@@ -103,6 +103,9 @@ class VirtualKeyboard
       //Create a .key element for this key
       let element = document.createElement("div");
       element.classList.add("key");
+      //Create a .tooltip element for this key (displayed when the key is pressed)
+      let keyTooltip = document.createElement("div");
+      keyTooltip.classList.add("tooltip");
       //Does a special key exist for this character?
       if(this.specials.hasOwnProperty(keys[k]))
       {
@@ -110,6 +113,7 @@ class VirtualKeyboard
         element.classList.add("special");
         //Add the custom content for this key (probably an icon)
         element.innerHTML = this.specials[keys[k]].content;
+        keyTooltip.innerHTML = this.specials[keys[k]].content;
         //On click, call this key's action
         element.addEventListener("click", (this.specials[keys[k]].action).bind(this));
       } else
@@ -117,9 +121,19 @@ class VirtualKeyboard
         //No special key exists for this character: this is a regular key
         //Set a label
         element.innerHTML = keys[k];
+        keyTooltip.innerHTML = keys[k];
         //On click, call input with this key's letter
         element.addEventListener("click", () => this.input(keys[k]));
       }
+      //Add handlers for the .tooltip to show and hide
+      element.addEventListener("touchstart", function(e){
+        e.currentTarget.classList.add('pressed')
+      }, {passive: true});
+      element.addEventListener("touchend", function(e){
+        e.currentTarget.classList.remove('pressed')
+      });
+      //Append the .tooltip to the .key
+      element.append(keyTooltip);
       //Append the .key to the current .key-row
       currentRow.append(element);
     }
