@@ -299,6 +299,8 @@ class Puzzle
 
         //The cell isn't empty, which means this word is already filled in; let's keep looking for an incomplete word...
         countdown--;
+        //If appropriate, change the direction for the next loop
+        if(directionChanged) direction = !direction;
     } while(countdown > 0)
 
     //We've gone through the whole list, and couldn't find a word.
