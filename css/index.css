@@ -120,11 +120,21 @@ input[type='file'] {
 {
   flex: 1;
 }
-#toolbar > div
+#toolbar > div, #toolbar > label
 {
   display: inline-block;
   height: 100%;
   width: 50px;
+  margin: 0 5px;
+}
+#toolbar input[type='checkbox']
+{
+  display:none;
+}
+#toolbar input[type='checkbox']:checked + label
+{
+  background: var(--toolbar-text-color);
+  color: var(--toolbar-bg-color);
 }
 #main-menu-button, #check-menu-button
 {

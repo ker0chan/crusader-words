@@ -3,6 +3,7 @@ var gridPixelWidth;
 var gridPixelHeight;
 var cellBindings; //d3 bindings to the current puzzle's cells
 var currentDirection = true; //true: Across; false: Down
+var autocheckMode = false;
 
 resizeGrid(); //Initialize the grid size
 
@@ -32,6 +33,7 @@ document.querySelector("#check-word-button").addEventListener("click", checkWord
 document.querySelector("#check-puzzle-button").addEventListener("click", checkPuzzleHandler);
 document.querySelector("#reveal-cell-button").addEventListener("click", revealCellHandler);
 document.querySelector("#reveal-word-button").addEventListener("click", revealWordHandler);
+document.querySelector("#autocheck-checkbox").addEventListener("change", e => {autocheckHandler(e.currentTarget.checked);});
 
 //Match every .dropdown-button with its .dropdown
 document.querySelectorAll(".dropdown-button").forEach(function(button){
@@ -167,11 +169,18 @@ function cellClickHandler(cell, index)
 //On keyboard input
 function inputHandler(letter)
 {
+  let indexBeforeInput = currentPuzzle.selectedIndex;
+
   //Input the current letter in the puzzle, in the currentDirection.
   if(currentPuzzle.input(letter, currentDirection))
   {
     //If Puzzle::input returns true, it changed the direction (probably reached the end of the last word of the grid in the currentDirection)
     currentDirection = !currentDirection;
+  }
+  //If autocheck is enabled, check the cell as well (use indexBeforeInput, because calling input() means we have selected a new cell!)
+  if(autocheckMode)
+  {
+    currentPuzzle.cells[indexBeforeInput].check();
   }
   //Display the changes
   render();
@@ -334,6 +343,11 @@ function revealWordHandler()
   //Save and display changes
   save();
   render();
+}
+
+function autocheckHandler(checked)
+{
+  autocheckMode = checked;
 }
 
 //Basic local storage save
