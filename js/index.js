@@ -29,6 +29,7 @@ document.querySelector("#clue-container").addEventListener("click", changeDirect
 //Toolbar buttons
 document.querySelector("#check-cell-button").addEventListener("click", checkCellHandler);
 document.querySelector("#check-puzzle-button").addEventListener("click", checkPuzzleHandler);
+document.querySelector("#reveal-cell-button").addEventListener("click", revealCellHandler);
 
 //Match every .dropdown-button with its .dropdown
 document.querySelectorAll(".dropdown-button").forEach(function(button){
@@ -95,10 +96,16 @@ var colorScheme = {
 
   "--grid-bg-color":"#FCDDC9",
   "--grid-line-color":"#826B88",
-  "--letter-default-color":"#585872",
-  "--cell-black":"#826B88",
-  "--cell-selected":"#DE786A",
-  "--cell-word-selected":"#F8B976",
+
+  "--cell-black-bg-color":"#826B88",
+  "--cell-selected-bg-color":"#DE786A",
+  "--cell-word-selected-bg-color":"#F8B976",
+
+  "--cell-default-text-color":"#585872",
+  "--cell-validated-text-color":"#417C52",
+  "--cell-cheated-marker-color":"#C50F0F",
+  "--cell-corrected-marker-color":"#000000",
+  "--cell-error-marker-color":"#C50F0F",
 
   "--clue-bg-color":"#376888",
   "--clue-text-color":"#8CD0E5",
@@ -250,34 +257,27 @@ function render()
   //Ratio of the cell height that'll be applied to get a font size.
   //1 = letters fit perfectly, no margins, not pretty
   var fontSizeRatio = 0.7;
-  //Ratio of the cell dimensions that'll be applied to get the number label dimensions
-  //Keep it small, but readable.
-  var numberLabelRatio = 0.32;
-  //Ratio of the left margin that'll be applied to position the number
-  var numberMarginRatio = 0.05;
+
 
   //Style the cell elements
   cellBindings.style("width", cellPixelWidth+"px")
   .style("height", cellPixelHeight+"px")
   .style("line-height", cellPixelHeight+"px")
   .style("font-size", (cellPixelHeight*fontSizeRatio)+"px")
+  //Apply the state styles
+  .style("--cell-marker-size", (cellPixelWidth/3.0/2.0)+"px")
+  .classed("validated", d=>d.validated) //Validated cells
+  .classed("cheated", d=>d.cheated) //Cheated cells
+  .classed("error", d=>(d.error && d.userContent != '')) //Error cells (empty cells don't show as error)
+  .classed("corrected", d=>(d.corrected && !d.error && !d.cheated)) //Corrected cells (cells that have an error or have been cheatedly revealed don't show as corrected)
+  //Apply selection classes
+  cellBindings
+  .classed("selected", d => d.selected) //The selected cell
+  .classed("word-selected", d => d.wordSelected) //Cells that are part of the same word as the selected cell
 
   //Display the content of this cell
   cellBindings.selectAll(".content")
   .text(d => d.userContent)
-
-  //Style the number element in this cell (might be empty, but styled nonetheless ¯\_(ツ)_/¯)
-  cellBindings.selectAll(".number")
-  .style("width", (cellPixelWidth*numberLabelRatio)+"px")
-  .style("left", (cellPixelWidth*numberMarginRatio)+"px")
-  .style("height", (cellPixelHeight*numberLabelRatio)+"px")
-  .style("line-height", (cellPixelHeight*numberLabelRatio)+"px")
-  .style("font-size", (cellPixelHeight*numberLabelRatio*fontSizeRatio)+"px")
-
-  //Apply selection classes
-  cellBindings
-  .classed("selected", d => d.selected)
-  .classed("word-selected", d => d.wordSelected)
 
   //Display the current clue
   document.querySelector("#clue").innerHTML = currentPuzzle.selectedWord.clue;
@@ -285,14 +285,31 @@ function render()
 
 function checkCellHandler()
 {
-  var currentCell = currentPuzzle.cells[currentPuzzle.selectedIndex];
-  alert( (currentCell.content == currentCell.userContent)?"This cell is correct.":"This cell is incorrect." );
+  //Check the state of the selected cell
+  currentPuzzle.cells[currentPuzzle.selectedIndex].check();
+  //Save and display changes
+  save();
+  render();
 }
 
 function checkPuzzleHandler()
 {
-  var err = currentPuzzle.cells.find(c => !c.black && c.content != c.userContent)
-  alert( (err == undefined)?"This puzzle is complete - Well done!":"You're not done yet :(" );
+  //Check the state of every non-black cell in the puzzle
+  currentPuzzle.cells.forEach(cell => {
+    if(!cell.black) cell.check();
+  })
+  //Save and display changes
+  save();
+  render();
+}
+
+function revealCellHandler()
+{
+  //Reveal the selected cell
+  currentPuzzle.cells[currentPuzzle.selectedIndex].reveal();
+  //Save and display changes
+  save();
+  render();
 }
 
 //Basic local storage save

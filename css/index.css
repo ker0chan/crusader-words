@@ -152,7 +152,7 @@ input[type='file'] {
   display:inline-block;
   border:1px solid var(--grid-line-color);
   text-align: center;
-  color: var(--letter-default-color);
+  color: var(--cell-default-text-color);
   cursor: pointer;
   position: relative;
   vertical-align: middle;
@@ -163,23 +163,66 @@ input[type='file'] {
 }
 .cell.black
 {
-  background-color: var(--cell-black);
+  background-color: var(--cell-black-bg-color);
   color: transparent;
 }
 .cell.word-selected
 {
-  background-color: var(--cell-word-selected);
+  background-color: var(--cell-word-selected-bg-color);
 }
 .cell.selected
 {
-  background-color: var(--cell-selected);
+  background-color: var(--cell-selected-bg-color);
 }
 .cell .number
 {
   position: absolute;
-  top: 0;
+  top: 5%;
+  left: 5%;
+  width: 32%;
+  height: 32%;
   text-align: left;
   font-weight: bold;
+  font-size: 32%;
+  line-height: 100%;
+}
+.cell.cheated::after
+{
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: var(--cell-marker-size) solid transparent;
+  border-top: var(--cell-marker-size) solid var(--cell-cheated-marker-color);
+  border-right: var(--cell-marker-size) solid var(--cell-cheated-marker-color);
+}
+.cell.corrected::after
+{
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: var(--cell-marker-size) solid transparent;
+  border-top: var(--cell-marker-size) solid var(--cell-corrected-marker-color);
+  border-right: var(--cell-marker-size) solid var(--cell-corrected-marker-color);
+}
+.cell.error::after
+{
+  content: '';
+  display: block;
+  position: absolute;
+  border-top: 1px solid var(--cell-error-marker-color);
+  transform-origin: top right;
+  width: 141.421356237%; /* sqrt(2) * 100% */
+  transform: rotate(-45deg);
+  top: 0;
+  right: 0;
+}
+.cell.validated
+{
+  color:var(--cell-validated-text-color);
 }
 
 /* clue */

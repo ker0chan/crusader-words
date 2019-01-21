@@ -8,7 +8,7 @@ class Puzzle
     this.words = words; //An array of Words.
     this.rawContent = rawContent; //A string containing the entire grid, with one letter (or ".") per cell. Should have a length of width*height. Extracted from the .puz file.
 
-    this.cells = (cells==null)?[]:cells; //An array of CellData. Will be data-bound to d3 elements.
+    this.cells = []; //An array of CellData. Will be data-bound to d3 elements.
     this.selectedIndex; //The currently selected index
     this.selectedWord; //The currently selected word
 
@@ -19,8 +19,12 @@ class Puzzle
       this.initCells();
     } else
     {
-      //Restore the cells to the given state
-      this.cells = cells;
+      //Restore the cells by rebuilding CellData objects
+      this.cells = cells.map(c => {
+          let cellData = new CellData();
+          //Assign the (most probably deserialized) cells to a new CellData object, and return the merged instance of CellData
+          return Object.assign(cellData, c);
+      });
     }
 
     this.select(this.coordsToIndex(this.words[0].x, this.words[0].y), true); //Select the first cell of the first word, in direction Across
@@ -142,7 +146,7 @@ class Puzzle
     let overwriting = (this.cells[this.selectedIndex].userContent != '');
 
     //Write that letter down
-    this.cells[this.selectedIndex].userContent = letter;
+    this.cells[this.selectedIndex].fill(letter);
 
     //Are we on the last cell of this word? (start + length - 1, directionally aware)
     if(this.selectedIndex >= this.coordsToIndex(this.selectedWord.x, this.selectedWord.y) + ((this.selectedWord.answer.length-1)*(direction?1:this.width)))
@@ -191,7 +195,7 @@ class Puzzle
     if(this.cells[this.selectedIndex].userContent != '')
     {
       //The current cell isn't empty its content
-      this.cells[this.selectedIndex].userContent = '';
+      this.cells[this.selectedIndex].fill("");
     } else
     {
       //The current cell is empty: go back to the previous cell and erase this one instead!
@@ -210,7 +214,7 @@ class Puzzle
       }
 
       //And now, empty the cell's content èwé
-      this.cells[this.selectedIndex].userContent = '';
+      this.cells[this.selectedIndex].fill("");
     }
 
     //We didn't change direction.
