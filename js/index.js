@@ -28,8 +28,10 @@ document.querySelector("#clue-container").addEventListener("click", changeDirect
 
 //Toolbar buttons
 document.querySelector("#check-cell-button").addEventListener("click", checkCellHandler);
+document.querySelector("#check-word-button").addEventListener("click", checkWordHandler);
 document.querySelector("#check-puzzle-button").addEventListener("click", checkPuzzleHandler);
 document.querySelector("#reveal-cell-button").addEventListener("click", revealCellHandler);
+document.querySelector("#reveal-word-button").addEventListener("click", revealWordHandler);
 
 //Match every .dropdown-button with its .dropdown
 document.querySelectorAll(".dropdown-button").forEach(function(button){
@@ -292,6 +294,17 @@ function checkCellHandler()
   render();
 }
 
+function checkWordHandler()
+{
+  //Check the state of every cell in the selected word
+  currentPuzzle.cells.forEach(cell => {
+    if(cell.wordSelected) cell.check();
+  })
+  //Save and display changes
+  save();
+  render();
+}
+
 function checkPuzzleHandler()
 {
   //Check the state of every non-black cell in the puzzle
@@ -307,6 +320,17 @@ function revealCellHandler()
 {
   //Reveal the selected cell
   currentPuzzle.cells[currentPuzzle.selectedIndex].reveal();
+  //Save and display changes
+  save();
+  render();
+}
+
+function revealWordHandler()
+{
+  //Reveal every cell in the selected word
+  currentPuzzle.cells.forEach(cell => {
+    if(cell.wordSelected) cell.reveal();
+  })
   //Save and display changes
   save();
   render();
