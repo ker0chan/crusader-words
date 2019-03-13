@@ -78,6 +78,10 @@ class VirtualKeyboard
     let keys = this.layout.split("");
     //Will hold the current .key-row element to append to
     let currentRow = null;
+
+    //We'll figure out how many keys are on the row with the biggest amount of keys, and style them accordingly.
+    let maxKeysCount = 0;
+    let currentKeysCount = 0;
     //Iterate over the keys
     for(let k in keys)
     {
@@ -86,6 +90,7 @@ class VirtualKeyboard
       {
         //Reset currentRow
         currentRow = null;
+        currentKeysCount = 0;
         //And move to the next char
         continue;
       }
@@ -109,6 +114,8 @@ class VirtualKeyboard
       //Does a special key exist for this character?
       if(this.specials.hasOwnProperty(keys[k]))
       {
+        //Special keys are larger than regular keys (by an arbitrary 1.5 factor)
+        currentKeysCount += 1.5;
         //Add the proper class
         element.classList.add("special");
         //Add the custom content for this key (probably an icon)
@@ -119,12 +126,14 @@ class VirtualKeyboard
       } else
       {
         //No special key exists for this character: this is a regular key
+        currentKeysCount += 1;
         //Set a label
         element.innerHTML = keys[k];
         keyTooltip.innerHTML = keys[k];
         //On click, call input with this key's letter
         element.addEventListener("click", () => this.input(keys[k]));
       }
+
       //Add handlers for the .tooltip to show and hide
       element.addEventListener("touchstart", function(e){
         e.currentTarget.classList.add('pressed')
@@ -136,6 +145,13 @@ class VirtualKeyboard
       element.append(keyTooltip);
       //Append the .key to the current .key-row
       currentRow.append(element);
+      
+      //Update the count of "maximum keys in a single row"
+      maxKeysCount = Math.max(maxKeysCount, currentKeysCount);
     }
+    
+    //Provide the max amount of keys in a single row as a CSS variable,
+    // ensuring we can always style them to fit in the viewport width
+    this.container.style.setProperty('--max-keys-count', maxKeysCount);
   }
 }

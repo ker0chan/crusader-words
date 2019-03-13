@@ -152,6 +152,7 @@ input[type='file'] {
   background: var(--grid-bg-color);
   margin: 0 auto;
   user-select: none;
+  line-height: 0;
 }
 #grid *
 {
@@ -254,12 +255,13 @@ input[type='file'] {
 {
   height: 50px;
   text-align: center;
+  width: 100%;
 }
 #keyboard .key
 {
   display: inline-block;
   height: 50px;
-  width: 37px;
+  width: calc(100% / var(--max-keys-count) - 4px);
   font-size: 26px;
   line-height: 50px;
   color: var(--keyboard-keys-text-color);
@@ -272,7 +274,7 @@ input[type='file'] {
 }
 #keyboard .key.special
 {
-  width: 55px;
+  width: calc((100% / var(--max-keys-count) - 4px) * 1.5);
   height: 43px;
   padding-top: 7px;
 }
