@@ -140,13 +140,17 @@ function updateBindings()
   .classed("content", true)
 
   //Add a number element in each cell
-  cellBindings.append("div")
+  cellBindings
+  .filter(d=>d.number != "")
+  .classed("has-number", true)
+  .append("div")
   .classed("number", true)
   .text(d => d.number)
 
   //Add a circle element in circled cells
   cellBindings
   .filter(d=>d.circle)
+  .classed("has-circle", true)
   .append("div")
   .classed("circle", true)
 
