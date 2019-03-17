@@ -1,11 +1,8 @@
 var currentPuzzle;
-var gridPixelWidth;
-var gridPixelHeight;
+var cellPixelSize;
 var cellBindings; //d3 bindings to the current puzzle's cells
 var currentDirection = true; //true: Across; false: Down
 var autocheckMode = false;
-
-resizeGrid(); //Initialize the grid size
 
 //Create a virtual keyboard in #keyboard
 var keyboard = new VirtualKeyboard(document.querySelector("#keyboard"));
@@ -85,7 +82,7 @@ if(localStorage.getItem("currentPuzzle") != null)
   //Deserialize the puzzle data
   var s = JSON.parse(localStorage.getItem("currentPuzzle"));
   //Rebuild the puzzle
-  currentPuzzle = new Puzzle(s.width, s.height, s.blacks, s.words, s.rawContent, s.cells);
+  currentPuzzle = new Puzzle(s.width, s.height, s.blacks, s.words, s.circles, s.rawContent, s.cells);
   //Update the d3 bindings
   updateBindings();
 }
@@ -146,6 +143,12 @@ function updateBindings()
   cellBindings.append("div")
   .classed("number", true)
   .text(d => d.number)
+
+  //Add a circle element in circled cells
+  cellBindings
+  .filter(d=>d.circle)
+  .append("div")
+  .classed("circle", true)
 
   //Display the changes
   render();
@@ -246,37 +249,35 @@ function changeDirectionHandler()
 //Resizes the grid element
 function resizeGrid()
 {
-  //Figure out the width and height for the (assumed square) grid.
-  //Use the width or height (depending on which is smaller) of its container.
   var gridContainer = document.querySelector("#grid-flex-container");
-  gridPixelWidth = gridPixelHeight = Math.min(gridContainer.offsetWidth, gridContainer.offsetHeight);
+  //Figure out the maximum possible pixel size for cells, that will let us fit the grid in the available space
+  cellPixelSize = Math.min(
+    gridContainer.offsetWidth/currentPuzzle.width, //It needs to be at least this small to fit horizontally,
+    gridContainer.offsetHeight/currentPuzzle.height //and at least this small to fit vertically.
+  );
 
   //Style the grid element
   d3.select("#grid")
-  .style("width", gridPixelWidth+"px")
-  .style("height", gridPixelHeight+"px")
-  .style("min-height", gridPixelHeight+"px")
+  .style("width", cellPixelSize*currentPuzzle.width+"px")
+  .style("height", cellPixelSize*currentPuzzle.height+"px")
+  .style("min-height", cellPixelSize*currentPuzzle.height+"px")
 }
 function render()
 {
   //Resize the grid element (could be done in a window resize event, but at least now it's done "often enough" ¯\_(ツ)_/¯)
   resizeGrid();
 
-  //Figure out the width and height of each cell.
-  var cellPixelWidth = gridPixelWidth/currentPuzzle.width;
-  var cellPixelHeight = gridPixelHeight/currentPuzzle.height;
   //Ratio of the cell height that'll be applied to get a font size.
   //1 = letters fit perfectly, no margins, not pretty
   var fontSizeRatio = 0.7;
 
-
   //Style the cell elements
-  cellBindings.style("width", cellPixelWidth+"px")
-  .style("height", cellPixelHeight+"px")
-  .style("line-height", cellPixelHeight+"px")
-  .style("font-size", (cellPixelHeight*fontSizeRatio)+"px")
+  cellBindings.style("width", cellPixelSize+"px")
+  .style("height", cellPixelSize+"px")
+  .style("line-height", cellPixelSize+"px")
+  .style("font-size", (cellPixelSize*fontSizeRatio)+"px")
   //Apply the state styles
-  .style("--cell-marker-size", (cellPixelWidth/3.0/2.0)+"px")
+  .style("--cell-marker-size", (cellPixelSize/3.0/2.0)+"px")
   .classed("validated", d=>d.validated) //Validated cells
   .classed("cheated", d=>d.cheated) //Cheated cells
   .classed("error", d=>(d.error && d.userContent != '')) //Error cells (empty cells don't show as error)

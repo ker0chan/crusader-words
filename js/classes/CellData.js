@@ -6,6 +6,7 @@ class CellData
     this.wordSelected = false; //Is this cell part of a word that is selected?
     this.content = content; //(Expected) content of the cell ('.' for black cells)
     this.black = (content == ".");
+    this.circle = false; //Special case that appears in some grids: cells can be circled
     this.userContent = ''; //User-inputted content for this cell
     this.number = number; //If a word starts on this cell, this is its number
 

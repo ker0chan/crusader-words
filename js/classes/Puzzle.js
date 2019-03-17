@@ -1,11 +1,12 @@
 class Puzzle
 {
-  constructor(width, height, blacks, words, rawContent, cells = null)
+  constructor(width, height, blacks, words, circles, rawContent, cells = null)
   {
     this.width = width; //Width of the grid. Extracted from the .puz file.
     this.height = height; //Height of the grid. Extracted from the .puz file.
     this.blacks = blacks; //An array of {x, y} coordinates indicating black cells
     this.words = words; //An array of Words.
+    this.circles = circles; //An array of {x, y} coordinates indicating circled cells
     this.rawContent = rawContent; //A string containing the entire grid, with one letter (or ".") per cell. Should have a length of width*height. Extracted from the .puz file.
 
     this.cells = []; //An array of CellData. Will be data-bound to d3 elements.
@@ -45,6 +46,11 @@ class Puzzle
     //Iterate over the list of words to fill in the numbers in the cells that need it
     this.words.forEach(function(w){
       this.at(w.x, w.y).number = w.number;
+    }, this)
+
+    //Iterate over the list of circled cells to tag each of them appropriately
+    this.circles.forEach(function(w){
+      this.at(w.x, w.y).circle = true;
     }, this)
   }
 

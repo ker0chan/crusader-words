@@ -96,12 +96,16 @@ function parsePuz(buffer)
     //Match each clue with its word - they should be in the same order!
     w.clue = readLine(buffer, iterator);
   })
+  
+  //Circles
+  var circles = parseCircles(buffer, width, height);
 
   return new Puzzle(
     width,
     height,
     blacks,
     words,
+    circles,
     gridData.split("")
   );;
 }
@@ -180,4 +184,35 @@ function readLetter(gridData, x, y, w, h)
 
   //Get the letter at this position
   return gridData[w*y+x];
+}
+
+function parseCircles(buffer, width, height) {
+  //TODO: Ideally extensions should be parsed in order. There's no guarantee that GEXT is last.
+  //see https://github.com/alexdej/puzpy/blob/fb1aa638cc74aee10d1359a5a01355056908cb6a/puz.py#L197
+  var indexOfGEXT = buffer.length-width*height-9;
+  var shouldBeSize = (256+buffer[indexOfGEXT+4])%256 + ((256+buffer[indexOfGEXT+5])%256 << 8)
+  var sanityCheck =
+    buffer[indexOfGEXT+0] === 'G'.charCodeAt(0) &&
+    buffer[indexOfGEXT+1] === 'E'.charCodeAt(0) &&
+    buffer[indexOfGEXT+2] === 'X'.charCodeAt(0) &&
+    buffer[indexOfGEXT+3] === 'T'.charCodeAt(0) &&
+    shouldBeSize === width * height;
+  var circles = [];
+  if (sanityCheck) {
+    //Read width*height bytes
+    var flagData = buffer.slice(
+      indexOfGEXT+8,
+      indexOfGEXT+8+width*height
+    );
+    for(let i = 0; i < flagData.length; i++)
+    {
+      let x = i%width;
+      let y = Math.floor(i/width);
+      if (flagData[i] < 0)
+      {
+        circles.push({"x":x, "y":y});
+      }
+    }
+  }
+  return circles;
 }
