@@ -4,6 +4,7 @@ class CellData
   {
     this.selected = false; //Is this cell selected?
     this.wordSelected = false; //Is this cell part of a word that is selected?
+    this.referenced = false; //Is this cell referenced by the current clue?
     this.content = content; //(Expected) content of the cell ('.' for black cells)
     this.black = (content == ".");
     this.circle = false; //Special case that appears in some grids: cells can be circled

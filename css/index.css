@@ -191,6 +191,10 @@ input[type='file'] {
 {
   border-top-left-radius:0px;
 }
+.cell.referenced
+{
+  background: var(--cell-referenced-bg-color);
+}
 .cell.word-selected
 {
   background-color: var(--cell-word-selected-bg-color);

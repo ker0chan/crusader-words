@@ -101,12 +101,13 @@ var colorScheme = {
   "--cell-black-bg-color":"#826B88",
   "--cell-selected-bg-color":"#DE786A",
   "--cell-word-selected-bg-color":"#F8B976",
+  "--cell-referenced-bg-color":"#FFF0E0",
 
   "--cell-default-text-color":"#585872",
-  "--cell-validated-text-color":"#417C52",
-  "--cell-cheated-marker-color":"#C50F0F",
-  "--cell-corrected-marker-color":"#000000",
-  "--cell-error-marker-color":"#C50F0F",
+  "--cell-validated-text-color":"#53A270",
+  "--cell-cheated-marker-color":"#B73887",
+  "--cell-corrected-marker-color":"#585872",
+  "--cell-error-marker-color":"#B73887",
 
   "--clue-bg-color":"#376888",
   "--clue-text-color":"#8CD0E5",
@@ -290,6 +291,7 @@ function render()
   cellBindings
   .classed("selected", d => d.selected) //The selected cell
   .classed("word-selected", d => d.wordSelected) //Cells that are part of the same word as the selected cell
+  .classed("referenced", d => d.referenced) //Cells that are part of a word referenced by the current clue
 
   //Display the content of this cell
   cellBindings.selectAll(".content")

@@ -66,12 +66,30 @@ class Puzzle
     return y*this.width+x;
   }
 
+  //Get all the cells that are part of a given word
+  cellsInWord(word)
+  {
+    let result = [];
+    let startIndex = this.coordsToIndex(word.x,word.y); //Start from the word's starting cell
+    let step = (word.direction?1:this.width); //Go up 1 (across) or width (down) cells
+    let endIndex = startIndex + word.answer.length*step; //Until we reach the end of the word
+
+    for(let i = startIndex; i < endIndex; i += step)
+    {
+      console.log(this.cells[i]);
+      //Add this cell to the resulting list
+      result.push(this.cells[i]);
+    }
+    return result;
+  }
+
   //Clear the current selection
   clearSelection()
   {
     this.cells.forEach(function(c){
       c.selected = false;
       c.wordSelected = false;
+      c.referenced = false;
     });
   }
 
@@ -88,61 +106,40 @@ class Puzzle
     let x = index%this.width;
     let y = Math.floor(index/this.width);
 
-    let i;
-    if(direction) //ACROSS
-    {
-      //Iterate on every cell to the left of the one we clicked
-      // (don't select cells on a different row though!)
-      for(i = index; i >= 0 && Math.floor(i/this.width) == y; i--)
-      {
-        //If it's black: stop
-        if(this.cells[i].black) break;
-        //Otherwise: it's part of the selection
-        this.cells[i].wordSelected = true;
-      }
-      //Iterate on every cell to the right of the one we clicked
-      for(i = index; i < this.width*this.height && Math.floor(i/this.width) == y; i++)
-      {
-        if(this.cells[i].black) break;
-        this.cells[i].wordSelected = true;
-      }
-    } else //DOWN
-    {
-      //Iterate on every cell above the one we clicked
-      for(i = index; i >= 0 /*&& index%this.width == x*/; i -= this.width)
-      {
-        if(this.cells[i].black) break;
-        this.cells[i].wordSelected = true;
-      }
-      //Iterate on every cell below the one we clicked
-      for(i = index; i < this.width*this.height /*&& index%this.width == x*/; i += this.width)
-      {
-        if(this.cells[i].black) break;
-        this.cells[i].wordSelected = true;
-      }
-    }
-
-    //Of course, select the cell at the given index
-    this.cells[index].selected = true;
-
     //Find the word that's selected; we'll need to display its clue, and know which one is next/previous
     //Filter the only possible word from the wordList:
     this.selectedWord = this.words.filter(function(w){
       if(w.direction != direction) return false; //Exclude a word that's in the wrong direction
       if(direction) // Across
       {
-        if(w.y != y) return false; //Exclude a word that's on another row
-        if(w.x > x) return false; //Exclude a word that starts after our selection
-        if(w.x + w.answer.length-1 < x) return false; //Exclude a word that ends before our selection
+        if(w.y != y) return false; //Exclude any word that's on another row
+        if(w.x > x) return false; //Exclude any word that starts after the selected cell
+        if(w.x + w.answer.length-1 < x) return false; //Exclude any word that ends before the selected cell
         return true;
       } else // Down
       {
-        if(w.x != x) return false; //Exclude a word that's on another column
-        if(w.y > y) return false; //Exclude a word that starts after our selection
-        if(w.y + w.answer.length-1 < y) return false; //Exclude a word that ends before our selection
+        if(w.x != x) return false; //Exclude any word that's on another column
+        if(w.y > y) return false; //Exclude any word that starts after the selected cell
+        if(w.y + w.answer.length-1 < y) return false; //Exclude any word that ends before the selected cell
         return true;
       }
     })[0];
+
+    //Select all the cells in that word
+    this.cellsInWord(this.selectedWord).forEach(c => c.wordSelected = true);
+    //Of course, select the cell at the given index
+    this.cells[index].selected = true;
+
+    //Does the clue for this word reference another word in the grid?
+    let referenceRE = new RegExp('([0-9]+)-(?=.*?(Across|Down))', 'gmi');
+    let match;
+    while(match = referenceRE.exec(this.selectedWord.clue))
+    {
+      let referenceDirection = match[2] == "Across";
+      let test = this.cellsInWord(this.words.find(w=>w.number == match[1] && w.direction == referenceDirection));
+      test.forEach(c => c.referenced = true);
+      console.log(test);
+    }
   }
 
   //Input the given letter at the current index, in the given direction
