@@ -21,7 +21,6 @@ You can easily host your own copy of Crusader Words - just put the folder on a l
 * Check answers when grid is filled, react accordingly
 * Reveal ~~cell/word~~/grid
 * Display puzzle information (author, description, copyright)
-* Highlight linked answers ("See 12-Across, ...")
 * Progress milestones (`Halfway done! *\(n_n)/*`)
 * Whatever rebuses are (rebus? rebi?)
 * Customisation (color scheme, margins/borders, fonts...)
