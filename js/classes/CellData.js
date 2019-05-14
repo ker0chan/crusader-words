@@ -35,6 +35,8 @@ class CellData
   //Reveals the content of a cell
   reveal()
   {
+    //The cell has already been validated: there's nothing else to reveal.
+    if(this.validated) return true;
     //Did this cell have the right content already? Otherwise, consider the cell "cheated".
     this.cheated = (this.userContent != this.content);
     //Set the userContent to be the expected content of the cell
